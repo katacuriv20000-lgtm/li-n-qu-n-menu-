@@ -1,0 +1,3 @@
+Open LQSkinStudio.xcodeproj in Xcode 15+ on macOS. Select the LQSkinStudio scheme, choose your Apple Development team under Signing & Capabilities, and build/archive for an iPhone. Deployment target: iOS 16.0; device family: iPhone; bundle ID: vn.nsm.lqskinstudio.
+
+This is a source project, not a compiled IPA. iOS 16.7.16 is not officially supported by TrollStore (except 16.7 RC build 20H18, which is a different build). Do not assume TrollStore can install this app on 16.7.16.

@@ -1,0 +1,32 @@
+workflows:
+  lqskin_unsigned_ipa:
+    name: LQ Skin Studio - unsigned IPA for Windows sideloading
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+    scripts:
+      - name: Build unsigned iOS archive
+        script: |
+          set -euo pipefail
+          xcodebuild \
+            -project "$CM_BUILD_DIR/LQSkinStudio.xcodeproj" \
+            -scheme LQSkinStudio \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$CM_BUILD_DIR/build/LQSkinStudio.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+      - name: Package app as unsigned IPA
+        script: |
+          set -euo pipefail
+          APP_PATH="$CM_BUILD_DIR/build/LQSkinStudio.xcarchive/Products/Applications/LQSkinStudio.app"
+          test -d "$APP_PATH"
+          mkdir -p "$CM_BUILD_DIR/build/Payload"
+          cp -R "$APP_PATH" "$CM_BUILD_DIR/build/Payload/LQSkinStudio.app"
+          cd "$CM_BUILD_DIR/build"
+          /usr/bin/ditto -c -k --sequesterRsrc --keepParent Payload LQSkinStudio-unsigned.ipa
+    artifacts:
+      - build/LQSkinStudio-unsigned.ipa
+      - /tmp/xcodebuild_logs/*.log
